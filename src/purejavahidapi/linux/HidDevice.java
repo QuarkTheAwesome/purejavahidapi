@@ -225,7 +225,7 @@ public class HidDevice extends purejavahidapi.HidDevice {
 	private static boolean uses_numbered_reports(byte[] report_descriptor, int size)
 
 	{
-		final boolean debug = false;
+		final boolean debug = true;
 		if (debug) {
 			for (int i = 0; i < size; i++) {
 				System.out.printf("0x%02X, ", report_descriptor[i]);
