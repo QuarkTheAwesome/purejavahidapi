@@ -48,6 +48,7 @@ public class HidDeviceInfo {
 	protected short m_ProductId;
 	protected short m_ReleaseNumber;
 	protected short m_UsagePage;
+	protected short m_UsageID;
 	protected String m_SerialNumberString;
 	protected String m_ManufactureString;
 	protected String m_ProductString;
@@ -122,6 +123,14 @@ public class HidDeviceInfo {
 	 */
 	public short getUsagePage() {
 		return m_UsagePage;
+	}
+	
+	/**
+	 * This method returns the 16 bit Usage ID number of the device.
+	 * @return the 16 bit Usage ID number
+	 */
+	public short getUsageID() {
+	    return m_UsageID;
 	}
 
 	/**
