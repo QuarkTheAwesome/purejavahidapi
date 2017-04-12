@@ -70,12 +70,12 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
 			usb_dev = udev_device_get_parent_with_subsystem_devtype(raw_dev, "usb", "usb_device");
 			String usb_dev_path = udev_device_get_devnode(usb_dev);
 			
-
+			
 
 			Properties p = new Properties();
 			p.load(new StringReader(udev_device_get_sysattr_value(hid_dev, "uevent")));
-
-			System.out.println("Linux device: " + p.toString()); //DEBUG
+			
+			System.out.println(udev_device_get_sysattr_value(hid_dev, "report_descriptor")); //DEBUG
 			
 			String[] hidId = ((String) p.get("HID_ID")).split(":");
 			short bus = (short) Long.parseLong(hidId[0], 16);
