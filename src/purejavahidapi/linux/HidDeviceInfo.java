@@ -76,11 +76,49 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
 			p.load(new StringReader(udev_device_get_sysattr_value(hid_dev, "uevent")));
 			
 			byte[] reportDescriptor = udev_device_get_sysattr_value(hid_dev, "report_descriptor").getBytes(); //DEBUG
-			for (byte b : reportDescriptor) {
-			    System.out.print(Integer.toHexString((int)b & 0xFF) + " ");
+			for (int i = 0; i < reportDescriptor.length;) {
+			    int key = reportDescriptor[i] & 0xFF;
+			    int key_size = 1;
+			    int data_size = 1;
+			    
+			    if ((key & 0xF0) == 0xF0) { //long item
+			        if (i + 1 < reportDescriptor.length) {
+			            data_size = reportDescriptor[i + 1];
+			        } else {
+			          //bad report
+			          data_size = 0;
+			        }
+			    } else { //short item
+			        data_size = key & 0x03;
+                    if (data_size == 3) data_size = 4;
+                    
+                    if ((key & 0xFC) == 0x04) { //Usage page
+                        //generally 0x01, heuristics from here on out
+                        int i2 = i + data_size + 1;
+                        if (i2 < reportDescriptor.length) {
+                            int key2 = reportDescriptor[i2];
+                            if ((key2 & 0xFC) == 0x08) { //Usage
+                                int data2_size = key2 & 0x03;
+                                if (i2 + data2_size < reportDescriptor.length) {
+                                    //bad report
+                                } else {
+                                    if (data2_size == 1) {
+                                        m_UsagePage = reportDescriptor[i2 + 1];
+                                    } else if (data2_size == 2 || data2_size == 3 /* can't fit int */) {
+                                        //TODO assuming big-endian, probably wrong
+                                        m_UsagePage = (short)((reportDescriptor[i2 + 1] >> 1) | reportDescriptor[i2 + 2]);
+                                    }
+                                }
+                            }
+                        } else {
+                            //PANIC!
+                        }
+                    }
+			    }
+			    
+			    i += (key_size + data_size);
 			}
-			System.out.print("\n");
-			
+
 			String[] hidId = ((String) p.get("HID_ID")).split(":");
 			short bus = (short) Long.parseLong(hidId[0], 16);
 			m_DeviceId = usb_dev_path;
