@@ -93,6 +93,7 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
                     if (data_size == 3) data_size = 4;
                     
                     if ((key & 0xFC) == 0x04) { //Usage page
+                        System.out.println("Found usage page key " + key + " at " + i);
                         //generally 0x01, heuristics from here on out
                         int i2 = i + data_size + 1;
                         if (i2 < reportDescriptor.length) {
@@ -100,8 +101,9 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
                             if ((key2 & 0xFC) == 0x08) { //Usage
                                 int data2_size = key2 & 0x03;
                                 if (i2 + data2_size < reportDescriptor.length) {
-                                    //bad report
+                                    System.out.println("i2 + data (" + (i2 + data2_size) + ") too large");
                                 } else {
+                                    System.out.println("Found usage! i2: " + i2 + " data2: " + data2_size + " dTest: " + reportDescriptor[i2 + 1]);
                                     if (data2_size == 1) {
                                         m_UsagePage = reportDescriptor[i2 + 1];
                                     } else if (data2_size == 2 || data2_size == 3 /* can't fit int */) {
@@ -111,6 +113,7 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
                                 }
                             }
                         } else {
+                            System.out.println("i2 (" + i2 + ") is too large");
                             //PANIC!
                         }
                     }
