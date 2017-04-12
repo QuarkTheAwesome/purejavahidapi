@@ -75,6 +75,8 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
 			Properties p = new Properties();
 			p.load(new StringReader(udev_device_get_sysattr_value(hid_dev, "uevent")));
 
+			System.out.println("Linux device: " + p.toString()); //DEBUG
+			
 			String[] hidId = ((String) p.get("HID_ID")).split(":");
 			short bus = (short) Long.parseLong(hidId[0], 16);
 			m_DeviceId = usb_dev_path;
