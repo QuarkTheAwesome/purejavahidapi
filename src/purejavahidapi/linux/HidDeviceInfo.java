@@ -101,8 +101,6 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
                             if ((key2 & 0xFC) == 0x08) { //Usage
                                 int data2_size = key2 & 0x03;
                                 if (i2 + data2_size < reportDescriptor.length) {
-                                    System.out.println("i2 + data (" + (i2 + data2_size) + ") too large");
-                                } else {
                                     System.out.println("Found usage! i2: " + i2 + " data2: " + data2_size + " dTest: " + reportDescriptor[i2 + 1]);
                                     if (data2_size == 1) {
                                         m_UsagePage = reportDescriptor[i2 + 1];
@@ -110,6 +108,8 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
                                         //TODO assuming big-endian, probably wrong
                                         m_UsagePage = (short)((reportDescriptor[i2 + 1] >> 1) | reportDescriptor[i2 + 2]);
                                     }
+                                } else {
+                                    System.out.println("i2 + data (" + (i2 + data2_size) + ") too large");
                                 }
                             }
                         } else {
