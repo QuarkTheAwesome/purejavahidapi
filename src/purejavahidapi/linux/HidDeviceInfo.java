@@ -75,7 +75,11 @@ import purejavahidapi.linux.UdevLibrary.udev_device;
 			Properties p = new Properties();
 			p.load(new StringReader(udev_device_get_sysattr_value(hid_dev, "uevent")));
 			
-			System.out.println(udev_device_get_sysattr_value(hid_dev, "report_descriptor")); //DEBUG
+			byte[] reportDescriptor = udev_device_get_sysattr_value(hid_dev, "report_descriptor").getBytes(); //DEBUG
+			for (byte b : reportDescriptor) {
+			    System.out.print(Integer.toHexString((int)b & 0xFF) + " ");
+			}
+			System.out.print("\n");
 			
 			String[] hidId = ((String) p.get("HID_ID")).split(":");
 			short bus = (short) Long.parseLong(hidId[0], 16);
